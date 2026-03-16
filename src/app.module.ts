@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { EmployeesModule } from './employees/employees.module';
 
 import configuration from './config/configuration';
 
@@ -13,6 +15,18 @@ import configuration from './config/configuration';
       load: configuration,
       envFilePath: ['.env', '.env.development', '.env.production'],
     }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const database = configService.get<Record<string, unknown>>('database') ?? {};
+        return {
+          ...database,
+          autoLoadEntities: true,
+          synchronize: true,
+        };
+      },
+    }),
+    EmployeesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
