@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Asset } from '../../assets/entities/asset.entity';
 
 @Entity()
 export class Category {
@@ -34,6 +35,15 @@ export class Category {
   })
   @Column({ length: 200 })
   description: string;
+
+  @ApiProperty({
+    description: 'Assets belonging to this category',
+    type: () => Asset,
+    isArray: true,
+    required: false,
+  })
+  @OneToMany(() => Asset, (asset) => asset.category)
+  assets: Asset[];
 
   @DeleteDateColumn()
   deletedAt: Date;

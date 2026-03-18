@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EmployeesModule } from './employees/employees.module';
 import { CategoriesModule } from './categories/categories.module';
+import { AssetsModule } from './assets/assets.module';
 
 import configuration from './config/configuration';
 
@@ -29,6 +30,7 @@ import configuration from './config/configuration';
     }),
     EmployeesModule,
     CategoriesModule,
+    AssetsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,6 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { Column, DeleteDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Asset } from '../../assets/entities/asset.entity';
 
 @Entity()
 export class Employee {
@@ -40,6 +41,15 @@ export class Employee {
   @ApiHideProperty()
   @Column({ select: false, length: 100 })
   password: string;
+
+  @ApiProperty({
+    description: 'Assets assigned to this employee (custodian)',
+    type: () => Asset,
+    isArray: true,
+    required: false,
+  })
+  @OneToMany(() => Asset, (asset) => asset.employee)
+  assets: Asset[];
 
   @DeleteDateColumn()
   deletedAt: Date;
