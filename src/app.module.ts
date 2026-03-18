@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EmployeesModule } from './employees/employees.module';
+import { CategoriesModule } from './categories/categories.module';
 
 import configuration from './config/configuration';
 
@@ -27,6 +28,7 @@ import configuration from './config/configuration';
       },
     }),
     EmployeesModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

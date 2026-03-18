@@ -54,6 +54,7 @@ export class EmployeesService implements CrudRepository<Employee> {
   async findByCode(employeeCode: string): Promise<Employee | null> {
     return await this.employeeRepository.findOne({
       where: { employeeCode },
+      withDeleted: true,
     });
   }
 
@@ -65,6 +66,7 @@ export class EmployeesService implements CrudRepository<Employee> {
   async findByEmail(email: string): Promise<Employee | null> {
     return await this.employeeRepository.findOne({
       where: { email },
+      withDeleted: true,
     });
   }
 
@@ -80,6 +82,7 @@ export class EmployeesService implements CrudRepository<Employee> {
         email,
         id: Not(id),
       },
+      withDeleted: true,
     });
   }
 
@@ -95,6 +98,7 @@ export class EmployeesService implements CrudRepository<Employee> {
         employeeCode: code,
         id: Not(id),
       },
+      withDeleted: true,
     });
   }
 
@@ -193,13 +197,13 @@ export class EmployeesService implements CrudRepository<Employee> {
       }
     }
 
-    // 2. Modifying the data.
+    // 3. Modifying the data.
     Object.assign(employee, updateEmployeeDto);
 
-    // 3. Saving the changes in the database.
+    // 4. Saving the changes in the database.
     const updatedEmployee = await this.employeeRepository.save(employee);
 
-    // 4. Returning the response.
+    // 5. Returning the response.
     return new EmployeeResponseDto(updatedEmployee);
   }
 
