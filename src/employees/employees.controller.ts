@@ -1,7 +1,4 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
-import { EmployeesService } from './employees.service';
-import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import {
   ApiBadRequestResponse,
   ApiBody,
@@ -11,8 +8,10 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
-import { EmployeeResponseDto } from './dto/employee-response.dto';
 import { MessageResponseDto } from 'src/common';
+
+import { CreateEmployeeDto, EmployeeResponseDto, UpdateEmployeeDto } from './dto';
+import { EmployeesService } from './employees.service';
 
 @Controller('employees')
 export class EmployeesController {

@@ -1,6 +1,7 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
-import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Asset } from '../../assets/entities/asset.entity';
+import { Role } from 'src/roles/entities/role.entity';
 
 @Entity()
 export class Employee {
@@ -50,6 +51,16 @@ export class Employee {
   })
   @OneToMany(() => Asset, (asset) => asset.employee)
   assets: Asset[];
+
+  @ApiProperty({
+    description: 'Role identifier (foreign key)',
+    example: 1,
+  })
+  @ManyToOne(() => Role, (role: Role) => role.employees, {
+    nullable: false,
+  })
+  @JoinColumn({ name: 'role_id' })
+  role: Role;
 
   @DeleteDateColumn()
   deletedAt: Date;

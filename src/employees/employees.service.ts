@@ -3,14 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Not } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { UpdateEmployeeDto } from './dto/update-employee.dto';
-import { EmployeeResponseDto } from './dto/employee-response.dto';
-
-import { Employee } from './entities/employee.entity';
-import { CrudRepository } from 'src/common/use-case';
 import { MessageResponseDto } from 'src/common';
+import { CrudRepository } from 'src/common/use-case';
+
+import { Employee } from './entities';
 import { AssetsService } from 'src/assets/assets.service';
+import { CreateEmployeeDto, EmployeeResponseDto, UpdateEmployeeDto } from './dto';
 
 @Injectable()
 export class EmployeesService implements CrudRepository<Employee> {

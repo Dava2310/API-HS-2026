@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
 import { Employee } from '../../employees/entities/employee.entity';
 
@@ -72,4 +72,7 @@ export class Asset {
   })
   @JoinColumn({ name: 'employee_id' })
   employee: Employee;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }
