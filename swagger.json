@@ -22,6 +22,670 @@
           "App"
         ]
       }
+    },
+    "/employees": {
+      "post": {
+        "operationId": "EmployeesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Data for the new Employee.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEmployeeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Employee created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid data for the new Employee."
+          }
+        },
+        "summary": "Creates a new Employee.",
+        "tags": [
+          "Employees"
+        ]
+      },
+      "get": {
+        "operationId": "EmployeesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The list of Employees.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EmployeeResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Gets all the Employee from the database.",
+        "tags": [
+          "Employees"
+        ]
+      }
+    },
+    "/employees/{id}": {
+      "get": {
+        "operationId": "EmployeesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID of the Employee.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data of the found Employee.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Employee not found."
+          }
+        },
+        "summary": "Find a single Employee from the database.",
+        "tags": [
+          "Employees"
+        ]
+      },
+      "patch": {
+        "operationId": "EmployeesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID of the Employee.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "The new attributes for the Employee.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEmployeeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Employee updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid data for the Employee."
+          },
+          "404": {
+            "description": "Employee not found."
+          }
+        },
+        "summary": "Updates an existing Employee.",
+        "tags": [
+          "Employees"
+        ]
+      },
+      "delete": {
+        "operationId": "EmployeesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Employee deleted succesfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Employee not found."
+          }
+        },
+        "summary": "Soft deletes an Employee from the database.",
+        "tags": [
+          "Employees"
+        ]
+      }
+    },
+    "/assets": {
+      "post": {
+        "operationId": "AssetsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Data for the new asset.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAssetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Asset created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid data - SKU duplicated."
+          },
+          "404": {
+            "description": "If Category or Employee assigned are not valid or not found."
+          }
+        },
+        "summary": "Creates a new asset in the database.",
+        "tags": [
+          "Assets"
+        ]
+      },
+      "get": {
+        "operationId": "AssetsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of all assets in DTO response format.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssetResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Returns a list of all assets in the database.",
+        "tags": [
+          "Assets"
+        ]
+      }
+    },
+    "/assets/{id}": {
+      "get": {
+        "operationId": "AssetsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Unique asset identifier in the database.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data of the asset found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Asset not found or not valid."
+          }
+        },
+        "summary": "Returns a single instance of an Asset.",
+        "tags": [
+          "Assets"
+        ]
+      },
+      "patch": {
+        "operationId": "AssetsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Unique asset identifier in the database.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "New data for the Asset.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAssetDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Asset updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid data - SKU duplicated."
+          },
+          "404": {
+            "description": "Asset/Category/Employee not found or not valid."
+          }
+        },
+        "summary": "Updates an already existing Asset.",
+        "tags": [
+          "Assets"
+        ]
+      },
+      "delete": {
+        "operationId": "AssetsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Unique asset identifier in the database.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Asset soft deleted succesfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Asset/Category/Employee not found or not valid."
+          }
+        },
+        "summary": "Soft deletes the asset from the database.",
+        "tags": [
+          "Assets"
+        ]
+      }
+    },
+    "/categories": {
+      "post": {
+        "operationId": "CategoriesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "The data for the new category",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Category created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid data."
+          }
+        },
+        "summary": "Create a new category",
+        "tags": [
+          "Categories"
+        ]
+      },
+      "get": {
+        "operationId": "CategoriesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of the categories.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategoryResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Gets all categories from the database.",
+        "tags": [
+          "Categories"
+        ]
+      }
+    },
+    "/categories/{id}": {
+      "get": {
+        "operationId": "CategoriesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Unique identifier of the category.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data of the found category.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found or not valid."
+          }
+        },
+        "summary": "Finds a single category.",
+        "tags": [
+          "Categories"
+        ]
+      },
+      "patch": {
+        "operationId": "CategoriesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Unique identifier for the category.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "New data for the category.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid data."
+          },
+          "404": {
+            "description": "Category not found or not valid."
+          }
+        },
+        "summary": "Updates a single category.",
+        "tags": [
+          "Categories"
+        ]
+      },
+      "delete": {
+        "operationId": "CategoriesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category removed succesfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found or not valid."
+          }
+        },
+        "summary": "Removes logically a category.",
+        "tags": [
+          "Categories"
+        ]
+      }
+    },
+    "/roles": {
+      "post": {
+        "operationId": "RolesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "The data for the new role",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Role created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Data invalid (e.g. roleCode duplicated)"
+          }
+        },
+        "summary": "Creates a new role in the database.",
+        "tags": [
+          "Roles"
+        ]
+      },
+      "get": {
+        "operationId": "RolesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The list of roles in DTO response format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RoleResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Finds all the valid roles in the database.",
+        "tags": [
+          "Roles"
+        ]
+      }
+    },
+    "/roles/{id}": {
+      "get": {
+        "operationId": "RolesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier of the role in the database.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The data of the role found in DTO response format.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Role not found or not valid."
+          }
+        },
+        "summary": "Finds a single instance of valid role by the ID.",
+        "tags": [
+          "Roles"
+        ]
+      },
+      "patch": {
+        "operationId": "RolesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier of the role in the database.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "The new data for the role.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role updated succesfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Data invalid (e.g. roleCode duplicated)"
+          },
+          "404": {
+            "description": "Role not found or not valid."
+          }
+        },
+        "summary": "Updates an already existing role in the database.",
+        "tags": [
+          "Roles"
+        ]
+      }
     }
   },
   "info": {
@@ -58,6 +722,451 @@
         "required": [
           "message"
         ]
+      },
+      "CreateEmployeeDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "description": "Employee full name",
+            "example": "John Doe",
+            "minLength": 3,
+            "maxLength": 100
+          },
+          "employeeCode": {
+            "type": "string",
+            "description": "Unique employee code (exactly 10 characters)",
+            "example": "EMP0012345",
+            "minLength": 10,
+            "maxLength": 10
+          },
+          "email": {
+            "type": "string",
+            "description": "Employee email address",
+            "example": "john.doe@company.com",
+            "maxLength": 100,
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "Employee password",
+            "example": "SecurePassword123",
+            "minLength": 8,
+            "maxLength": 100,
+            "format": "password"
+          }
+        },
+        "required": [
+          "fullName",
+          "employeeCode",
+          "email",
+          "password"
+        ]
+      },
+      "EmployeeResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Unique employee identifier",
+            "example": 1,
+            "readOnly": true
+          },
+          "fullName": {
+            "type": "string",
+            "description": "Employee full name",
+            "example": "John Doe",
+            "maxLength": 100
+          },
+          "employeeCode": {
+            "type": "string",
+            "description": "Unique employee code",
+            "example": "EMP0012345",
+            "minLength": 10,
+            "maxLength": 10
+          },
+          "email": {
+            "type": "string",
+            "description": "Employee email address",
+            "example": "john.doe@company.com",
+            "maxLength": 100,
+            "format": "email"
+          }
+        },
+        "required": [
+          "id",
+          "fullName",
+          "employeeCode",
+          "email"
+        ]
+      },
+      "UpdateEmployeeDto": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "description": "Employee full name",
+            "example": "John Doe",
+            "minLength": 3,
+            "maxLength": 100
+          },
+          "employeeCode": {
+            "type": "string",
+            "description": "Unique employee code (exactly 10 characters)",
+            "example": "EMP0012345",
+            "minLength": 10,
+            "maxLength": 10
+          },
+          "email": {
+            "type": "string",
+            "description": "Employee email address",
+            "example": "john.doe@company.com",
+            "maxLength": 100,
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "Employee password",
+            "example": "SecurePassword123",
+            "minLength": 8,
+            "maxLength": 100,
+            "format": "password"
+          }
+        }
+      },
+      "CreateAssetDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the asset",
+            "example": "MacBook Pro 14\"",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "sku": {
+            "type": "string",
+            "description": "Unique stock keeping unit (SKU) code for the asset",
+            "example": "MBP-2024-001",
+            "minLength": 3,
+            "maxLength": 20
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the asset",
+            "example": "Company laptop for development",
+            "maxLength": 500
+          },
+          "model": {
+            "type": "string",
+            "description": "Model of the asset",
+            "example": "MacBook Pro",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "brand": {
+            "type": "string",
+            "description": "Brand of the asset",
+            "example": "Apple",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "categoryId": {
+            "type": "number",
+            "description": "ID of the category this asset belongs to",
+            "example": 1
+          },
+          "employeeId": {
+            "type": "number",
+            "description": "ID of the employee assigned as custodian of this asset",
+            "example": 1
+          }
+        },
+        "required": [
+          "name",
+          "sku",
+          "description",
+          "model",
+          "brand",
+          "categoryId",
+          "employeeId"
+        ]
+      },
+      "AssetResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Unique asset identifier",
+            "example": 1,
+            "readOnly": true
+          },
+          "sku": {
+            "type": "string",
+            "description": "Unique stock keeping unit (SKU) code for the asset",
+            "example": "MBP-2024-001",
+            "minLength": 3,
+            "maxLength": 20
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the asset",
+            "example": "MacBook Pro 14\"",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the asset",
+            "example": "Company laptop for development",
+            "maxLength": 500
+          },
+          "model": {
+            "type": "string",
+            "description": "Model of the asset",
+            "example": "MacBook Pro",
+            "maxLength": 100
+          },
+          "brand": {
+            "type": "string",
+            "description": "Brand of the asset",
+            "example": "Apple",
+            "maxLength": 100
+          },
+          "categoryId": {
+            "type": "number",
+            "description": "Category identifier (foreign key)",
+            "example": 1
+          },
+          "employeeId": {
+            "type": "number",
+            "description": "Employee identifier (foreign key) - assigned custodian",
+            "example": 1
+          }
+        },
+        "required": [
+          "id",
+          "sku",
+          "name",
+          "description",
+          "model",
+          "brand",
+          "categoryId",
+          "employeeId"
+        ]
+      },
+      "UpdateAssetDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the asset",
+            "example": "MacBook Pro 14\"",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "sku": {
+            "type": "string",
+            "description": "Unique stock keeping unit (SKU) code for the asset",
+            "example": "MBP-2024-001",
+            "minLength": 3,
+            "maxLength": 20
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the asset",
+            "example": "Company laptop for development",
+            "maxLength": 500
+          },
+          "model": {
+            "type": "string",
+            "description": "Model of the asset",
+            "example": "MacBook Pro",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "brand": {
+            "type": "string",
+            "description": "Brand of the asset",
+            "example": "Apple",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "categoryId": {
+            "type": "number",
+            "description": "ID of the category this asset belongs to",
+            "example": 1
+          },
+          "employeeId": {
+            "type": "number",
+            "description": "ID of the employee assigned as custodian of this asset",
+            "example": 1
+          }
+        }
+      },
+      "CreateCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the category",
+            "example": "Smartphones",
+            "maxLength": 100,
+            "minLength": 5
+          },
+          "code": {
+            "type": "string",
+            "description": "Unique category code.",
+            "example": "ABCDE12345",
+            "minLength": 10,
+            "maxLength": 10
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the category.",
+            "example": "This category is about smartphones.",
+            "maxLength": 200,
+            "minLength": 5
+          }
+        },
+        "required": [
+          "name",
+          "code",
+          "description"
+        ]
+      },
+      "CategoryResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "deletedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "code",
+          "description",
+          "deletedAt"
+        ]
+      },
+      "UpdateCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the category",
+            "example": "Smartphones",
+            "maxLength": 100,
+            "minLength": 5
+          },
+          "code": {
+            "type": "string",
+            "description": "Unique category code.",
+            "example": "ABCDE12345",
+            "minLength": 10,
+            "maxLength": 10
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the category.",
+            "example": "This category is about smartphones.",
+            "maxLength": 200,
+            "minLength": 5
+          }
+        }
+      },
+      "CreateRoleDto": {
+        "type": "object",
+        "properties": {
+          "roleCode": {
+            "type": "string",
+            "description": "Unique role code in the application level",
+            "example": "administrator",
+            "minLength": 3,
+            "maxLength": 20
+          },
+          "name": {
+            "type": "string",
+            "description": "Official name for the role in user level",
+            "example": "System Administrator",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "description": {
+            "type": "string",
+            "description": "Description for the role in user level",
+            "example": "This role lets the user to perform all activities",
+            "minLength": 5,
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "roleCode",
+          "name",
+          "description"
+        ]
+      },
+      "RoleResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "roleCode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "roleCode",
+          "name",
+          "description"
+        ]
+      },
+      "UpdateRoleDto": {
+        "type": "object",
+        "properties": {
+          "roleCode": {
+            "type": "string",
+            "description": "Unique role code in the application level",
+            "example": "administrator",
+            "minLength": 3,
+            "maxLength": 20
+          },
+          "name": {
+            "type": "string",
+            "description": "Official name for the role in user level",
+            "example": "System Administrator",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "description": {
+            "type": "string",
+            "description": "Description for the role in user level",
+            "example": "This role lets the user to perform all activities",
+            "minLength": 5,
+            "maxLength": 255
+          }
+        }
       }
     }
   }
