@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
 import { CrudRepository, MessageResponseDto } from 'src/common';
@@ -15,6 +15,7 @@ export class AssetsService implements CrudRepository<Asset> {
     @InjectRepository(Asset)
     private assetRepository: Repository<Asset>,
     private categoryService: CategoriesService,
+    @Inject(forwardRef(() => EmployeesService))
     private employeeService: EmployeesService,
   ) {}
 
@@ -202,5 +203,15 @@ export class AssetsService implements CrudRepository<Asset> {
 
     // 3. Returning the message.
     return new MessageResponseDto('Asset removed succesfully.');
+  }
+
+  /**
+   * This function cleans the relation of all the Assets that were assigned to this Employee.
+   * Needs to be called when an Employee is going to be deleted.
+   * @param employeeId The ID of the Employee.
+   */
+  async cleanEmployeeAssets(employeeId: number): Promise<void> {
+    // It cleans all the employee relations in the assets that have that employeeId
+    await this.assetRepository.update({ employee: { id: employeeId } }, { employee: null });
   }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Not } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -10,12 +10,15 @@ import { EmployeeResponseDto } from './dto/employee-response.dto';
 import { Employee } from './entities/employee.entity';
 import { CrudRepository } from 'src/common/use-case';
 import { MessageResponseDto } from 'src/common';
+import { AssetsService } from 'src/assets/assets.service';
 
 @Injectable()
 export class EmployeesService implements CrudRepository<Employee> {
   constructor(
     @InjectRepository(Employee)
     private employeeRepository: Repository<Employee>,
+    @Inject(forwardRef(() => AssetsService))
+    private assetsService: AssetsService,
   ) {}
 
   /**
@@ -214,9 +217,10 @@ export class EmployeesService implements CrudRepository<Employee> {
    */
   async remove(id: number): Promise<MessageResponseDto> {
     // 1. Verifying the existence of the Employee.
-    await this.findValid(id);
+    const employee = await this.findValid(id);
 
     // 2. TODO: Deassigned all the items of this Employee.
+    await this.assetsService.cleanEmployeeAssets(employee.id);
 
     // 3. Soft deleting the employee.
     await this.employeeRepository.softDelete(id);

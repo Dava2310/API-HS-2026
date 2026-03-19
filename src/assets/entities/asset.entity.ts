@@ -66,7 +66,10 @@ export class Asset {
     description: 'Employee identifier (foreign key) - assigned custodian',
     example: 1,
   })
-  @ManyToOne(() => Employee, (employee: Employee) => employee.assets, { nullable: false })
+  @ManyToOne(() => Employee, (employee: Employee) => employee.assets, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'employee_id' })
   employee: Employee;
 }
