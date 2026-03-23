@@ -373,6 +373,147 @@
         ]
       }
     },
+    "/roles": {
+      "post": {
+        "operationId": "RolesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "The data for the new role",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Role created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Data invalid (e.g. roleCode duplicated)"
+          }
+        },
+        "summary": "Creates a new role in the database.",
+        "tags": [
+          "Roles"
+        ]
+      },
+      "get": {
+        "operationId": "RolesController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The list of roles in DTO response format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RoleResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Finds all the valid roles in the database.",
+        "tags": [
+          "Roles"
+        ]
+      }
+    },
+    "/roles/{id}": {
+      "get": {
+        "operationId": "RolesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier of the role in the database.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The data of the role found in DTO response format.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Role not found or not valid."
+          }
+        },
+        "summary": "Finds a single instance of valid role by the ID.",
+        "tags": [
+          "Roles"
+        ]
+      },
+      "patch": {
+        "operationId": "RolesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "The unique identifier of the role in the database.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "The new data for the role.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Role updated succesfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Data invalid (e.g. roleCode duplicated)"
+          },
+          "404": {
+            "description": "Role not found or not valid."
+          }
+        },
+        "summary": "Updates an already existing role in the database.",
+        "tags": [
+          "Roles"
+        ]
+      }
+    },
     "/categories": {
       "post": {
         "operationId": "CategoriesController_create",
@@ -545,147 +686,6 @@
           "Categories"
         ]
       }
-    },
-    "/roles": {
-      "post": {
-        "operationId": "RolesController_create",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "description": "The data for the new role",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateRoleDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Role created successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RoleResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Data invalid (e.g. roleCode duplicated)"
-          }
-        },
-        "summary": "Creates a new role in the database.",
-        "tags": [
-          "Roles"
-        ]
-      },
-      "get": {
-        "operationId": "RolesController_findAll",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "The list of roles in DTO response format",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/RoleResponseDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Finds all the valid roles in the database.",
-        "tags": [
-          "Roles"
-        ]
-      }
-    },
-    "/roles/{id}": {
-      "get": {
-        "operationId": "RolesController_findOne",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "The unique identifier of the role in the database.",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "The data of the role found in DTO response format.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RoleResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Role not found or not valid."
-          }
-        },
-        "summary": "Finds a single instance of valid role by the ID.",
-        "tags": [
-          "Roles"
-        ]
-      },
-      "patch": {
-        "operationId": "RolesController_update",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "The unique identifier of the role in the database.",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "description": "The new data for the role.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateRoleDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Role updated succesfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RoleResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Data invalid (e.g. roleCode duplicated)"
-          },
-          "404": {
-            "description": "Role not found or not valid."
-          }
-        },
-        "summary": "Updates an already existing role in the database.",
-        "tags": [
-          "Roles"
-        ]
-      }
     }
   },
   "info": {
@@ -754,13 +754,19 @@
             "minLength": 8,
             "maxLength": 100,
             "format": "password"
+          },
+          "roleId": {
+            "type": "number",
+            "description": "Role identifier (foreign key)",
+            "example": 1
           }
         },
         "required": [
           "fullName",
           "employeeCode",
           "email",
-          "password"
+          "password",
+          "roleId"
         ]
       },
       "EmployeeResponseDto": {
@@ -831,6 +837,11 @@
             "minLength": 8,
             "maxLength": 100,
             "format": "password"
+          },
+          "roleId": {
+            "type": "number",
+            "description": "Role identifier (foreign key)",
+            "example": 1
           }
         }
       },
@@ -1003,6 +1014,86 @@
           }
         }
       },
+      "CreateRoleDto": {
+        "type": "object",
+        "properties": {
+          "roleCode": {
+            "type": "string",
+            "description": "Unique role code in the application level",
+            "example": "administrator",
+            "minLength": 3,
+            "maxLength": 20
+          },
+          "name": {
+            "type": "string",
+            "description": "Official name for the role in user level",
+            "example": "System Administrator",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "description": {
+            "type": "string",
+            "description": "Description for the role in user level",
+            "example": "This role lets the user to perform all activities",
+            "minLength": 5,
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "roleCode",
+          "name",
+          "description"
+        ]
+      },
+      "RoleResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "roleCode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "roleCode",
+          "name",
+          "description"
+        ]
+      },
+      "UpdateRoleDto": {
+        "type": "object",
+        "properties": {
+          "roleCode": {
+            "type": "string",
+            "description": "Unique role code in the application level",
+            "example": "administrator",
+            "minLength": 3,
+            "maxLength": 20
+          },
+          "name": {
+            "type": "string",
+            "description": "Official name for the role in user level",
+            "example": "System Administrator",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "description": {
+            "type": "string",
+            "description": "Description for the role in user level",
+            "example": "This role lets the user to perform all activities",
+            "minLength": 5,
+            "maxLength": 255
+          }
+        }
+      },
       "CreateCategoryDto": {
         "type": "object",
         "properties": {
@@ -1085,86 +1176,6 @@
             "example": "This category is about smartphones.",
             "maxLength": 200,
             "minLength": 5
-          }
-        }
-      },
-      "CreateRoleDto": {
-        "type": "object",
-        "properties": {
-          "roleCode": {
-            "type": "string",
-            "description": "Unique role code in the application level",
-            "example": "administrator",
-            "minLength": 3,
-            "maxLength": 20
-          },
-          "name": {
-            "type": "string",
-            "description": "Official name for the role in user level",
-            "example": "System Administrator",
-            "minLength": 3,
-            "maxLength": 50
-          },
-          "description": {
-            "type": "string",
-            "description": "Description for the role in user level",
-            "example": "This role lets the user to perform all activities",
-            "minLength": 5,
-            "maxLength": 255
-          }
-        },
-        "required": [
-          "roleCode",
-          "name",
-          "description"
-        ]
-      },
-      "RoleResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number"
-          },
-          "roleCode": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "roleCode",
-          "name",
-          "description"
-        ]
-      },
-      "UpdateRoleDto": {
-        "type": "object",
-        "properties": {
-          "roleCode": {
-            "type": "string",
-            "description": "Unique role code in the application level",
-            "example": "administrator",
-            "minLength": 3,
-            "maxLength": 20
-          },
-          "name": {
-            "type": "string",
-            "description": "Official name for the role in user level",
-            "example": "System Administrator",
-            "minLength": 3,
-            "maxLength": 50
-          },
-          "description": {
-            "type": "string",
-            "description": "Description for the role in user level",
-            "example": "This role lets the user to perform all activities",
-            "minLength": 5,
-            "maxLength": 255
           }
         }
       }

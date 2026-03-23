@@ -8,6 +8,7 @@ import { CrudRepository } from 'src/common/use-case';
 
 import { Employee } from './entities';
 import { AssetsService } from 'src/assets/assets.service';
+import { RolesService } from 'src/roles/roles.service';
 import { CreateEmployeeDto, EmployeeResponseDto, UpdateEmployeeDto } from './dto';
 
 @Injectable()
@@ -17,6 +18,7 @@ export class EmployeesService implements CrudRepository<Employee> {
     private employeeRepository: Repository<Employee>,
     @Inject(forwardRef(() => AssetsService))
     private assetsService: AssetsService,
+    private rolesService: RolesService,
   ) {}
 
   /**
@@ -109,7 +111,9 @@ export class EmployeesService implements CrudRepository<Employee> {
    * @returns The data of the Employee created.
    */
   async create(createEmployeeDto: CreateEmployeeDto): Promise<EmployeeResponseDto> {
-    const { employeeCode, email } = createEmployeeDto;
+    const { employeeCode, email, roleId, password, fullName } = createEmployeeDto;
+
+    await this.rolesService.findValid(roleId);
 
     // 1. Finding an Employee by the unique code or email.
     let duplicatedEmployee = await this.findByCode(employeeCode);
@@ -125,12 +129,15 @@ export class EmployeesService implements CrudRepository<Employee> {
     }
 
     // 2. Hashing the password
-    const newPassword = await bcrypt.hash(createEmployeeDto.password, 10);
+    const newPassword = await bcrypt.hash(password, 10);
 
     // 3. Creating the Employee and saving into DB
     const employee = this.employeeRepository.create({
-      ...createEmployeeDto,
+      employeeCode,
+      email,
+      fullName,
       password: newPassword,
+      role: { id: roleId },
     });
 
     await this.employeeRepository.save(employee);
@@ -178,7 +185,12 @@ export class EmployeesService implements CrudRepository<Employee> {
     const employee = await this.findValid(id);
 
     // 2. Verifying the code of the employee
-    const { employeeCode, email } = updateEmployeeDto;
+    const { employeeCode, email, roleId, ...updateFields } = updateEmployeeDto;
+
+    if (roleId !== undefined) {
+      await this.rolesService.findValid(roleId);
+      Object.assign(employee, { role: { id: roleId } });
+    }
 
     let duplicatedEmployee: Employee;
 
@@ -199,7 +211,7 @@ export class EmployeesService implements CrudRepository<Employee> {
     }
 
     // 3. Modifying the data.
-    Object.assign(employee, updateEmployeeDto);
+    Object.assign(employee, updateFields);
 
     // 4. Saving the changes in the database.
     const updatedEmployee = await this.employeeRepository.save(employee);

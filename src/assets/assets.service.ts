@@ -37,6 +37,7 @@ export class AssetsService implements CrudRepository<Asset> {
     // Searching the Asset with the numeric ID
     const asset = await this.assetRepository.findOne({
       where: { id: numericId },
+      relations: ['employee', 'category'],
     });
 
     // If the Asset is not created or deleted logically, we send an error message
@@ -117,7 +118,9 @@ export class AssetsService implements CrudRepository<Asset> {
    */
   async findAll(): Promise<AssetResponseDto[]> {
     // 1. Finding all the Assets
-    const assets = await this.assetRepository.find();
+    const assets = await this.assetRepository.find({
+      relations: ['employee', 'category'],
+    });
 
     // 2. Mapping all the assets to the DTO response format.
     const mappedAssets = assets.map((a) => new AssetResponseDto(a));

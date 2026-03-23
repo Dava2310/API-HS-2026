@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, Length, MaxLength, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsEmail, IsInt, IsNotEmpty, IsPositive, IsString, Length, MaxLength, MinLength } from 'class-validator';
 
 export class CreateEmployeeDto {
   @ApiProperty({
@@ -48,4 +49,14 @@ export class CreateEmployeeDto {
   @MinLength(8, { message: 'Password must be at least 8 characters' })
   @MaxLength(100, { message: 'Password must not exceed 100 characters' })
   password: string;
+
+  @ApiProperty({
+    description: 'Role identifier (foreign key)',
+    example: 1,
+  })
+  @Type(() => Number)
+  @IsInt({ message: 'Role ID must be an integer' })
+  @IsPositive({ message: 'Role ID must be a positive number' })
+  @IsNotEmpty({ message: 'Role ID is required' })
+  roleId: number;
 }
