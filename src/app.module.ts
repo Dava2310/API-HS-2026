@@ -8,6 +8,7 @@ import { EmployeesModule } from './employees/employees.module';
 import { CategoriesModule } from './categories/categories.module';
 import { AssetsModule } from './assets/assets.module';
 import { RolesModule } from './roles/roles.module';
+import { StatisticsModule } from './statistics/statistics.module';
 
 import configuration from './config/configuration';
 
@@ -33,6 +34,7 @@ import configuration from './config/configuration';
     CategoriesModule,
     AssetsModule,
     RolesModule,
+    StatisticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
 import { Employee } from '../../employees/entities/employee.entity';
 
@@ -73,6 +81,22 @@ export class Asset {
   @JoinColumn({ name: 'employee_id' })
   employee: Employee;
 
-  @DeleteDateColumn()
+  @ApiProperty({
+    description: 'Timestamp when the record was created',
+    example: '2024-06-15T10:30:00.000Z',
+    type: String,
+    format: 'date-time',
+  })
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt: Date;
+
+  @ApiProperty({
+    description: 'Timestamp when the record was soft-deleted; null if still active',
+    example: null,
+    nullable: true,
+    type: String,
+    format: 'date-time',
+  })
+  @DeleteDateColumn({ type: 'timestamptz' })
   deletedAt: Date;
 }

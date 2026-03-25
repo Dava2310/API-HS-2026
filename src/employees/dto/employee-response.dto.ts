@@ -1,5 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNumber, IsPositive, IsString, Length, MaxLength, MinLength } from 'class-validator';
+import {
+  IsDate,
+  IsEmail,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  Length,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { Employee } from '../entities/employee.entity';
 
 export class EmployeeResponseDto {
@@ -42,10 +52,31 @@ export class EmployeeResponseDto {
   @MaxLength(100)
   email: string;
 
+  @ApiProperty({
+    description: 'When the record was created',
+    example: '2024-06-15T10:30:00.000Z',
+    type: String,
+    format: 'date-time',
+  })
+  @IsDate()
+  createdAt: Date;
+
+  @ApiProperty({
+    description: 'Soft-delete timestamp; null while the record is active',
+    nullable: true,
+    type: String,
+    format: 'date-time',
+  })
+  @IsOptional()
+  @IsDate()
+  deletedAt: Date | null;
+
   constructor(employee: Employee) {
     this.id = employee.id;
     this.fullName = employee.fullName;
     this.employeeCode = employee.employeeCode;
     this.email = employee.email;
+    this.createdAt = employee.createdAt;
+    this.deletedAt = employee.deletedAt;
   }
 }

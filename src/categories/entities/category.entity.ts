@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Asset } from '../../assets/entities/asset.entity';
 
 @Entity()
@@ -45,6 +45,22 @@ export class Category {
   @OneToMany(() => Asset, (asset) => asset.category)
   assets: Asset[];
 
-  @DeleteDateColumn()
+  @ApiProperty({
+    description: 'Timestamp when the record was created',
+    example: '2024-06-15T10:30:00.000Z',
+    type: String,
+    format: 'date-time',
+  })
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt: Date;
+
+  @ApiProperty({
+    description: 'Timestamp when the record was soft-deleted; null if still active',
+    example: null,
+    nullable: true,
+    type: String,
+    format: 'date-time',
+  })
+  @DeleteDateColumn({ type: 'timestamptz' })
   deletedAt: Date;
 }

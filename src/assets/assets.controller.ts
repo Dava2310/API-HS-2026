@@ -10,7 +10,7 @@ import {
 } from '@nestjs/swagger';
 
 import { AssetsService } from './assets.service';
-import { AssetResponseDto, CreateAssetDto, UpdateAssetDto } from './dto';
+import { AssetCreationTimeSeriesPointDto, AssetResponseDto, CreateAssetDto, UpdateAssetDto } from './dto';
 import { MessageResponseDto } from 'src/common';
 
 @Controller('assets')
@@ -41,6 +41,27 @@ export class AssetsController {
   })
   async findAll(): Promise<AssetResponseDto[]> {
     return await this.assetsService.findAll();
+  }
+
+  @Get('creation-timeseries/:year')
+  @ApiOperation({
+    summary: 'Returns monthly counts of assets created in the given calendar year.',
+  })
+  @ApiParam({
+    name: 'year',
+    type: Number,
+    description: 'Calendar year to aggregate (e.g. 2024).',
+    example: 2024,
+  })
+  @ApiOkResponse({
+    type: [AssetCreationTimeSeriesPointDto],
+    description: 'Twelve entries, January through December, with creation totals per month.',
+  })
+  @ApiBadRequestResponse({ description: 'Invalid year.' })
+  async getAssetCreationTimeSeriesByYear(
+    @Param('year', ParseIntPipe) year: number,
+  ): Promise<AssetCreationTimeSeriesPointDto[]> {
+    return await this.assetsService.getAssetCreationTimeSeriesByYear(year);
   }
 
   @Get(':id')
@@ -78,6 +99,23 @@ export class AssetsController {
   @ApiBadRequestResponse({ description: 'Invalid data - SKU duplicated.' })
   async update(@Param('id', ParseIntPipe) id: number, @Body() updateAssetDto: UpdateAssetDto) {
     return await this.assetsService.update(id, updateAssetDto);
+  }
+
+  @Patch(':id/free')
+  @ApiOperation({ summary: 'Frees an asset from the employee assigned.' })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'Unique asset identifier in the database.',
+  })
+  @ApiOkResponse({
+    type: MessageResponseDto,
+    description: 'Asset freed successfully.',
+  })
+  @ApiNotFoundResponse({ description: 'Asset not found or not valid.' })
+  @ApiBadRequestResponse({ description: 'Asset has no employee assigned.' })
+  async freeAsset(@Param('id', ParseIntPipe) id: number): Promise<MessageResponseDto> {
+    return await this.assetsService.freeAsset(id);
   }
 
   @Delete(':id')

@@ -5,9 +5,25 @@ import { CrudRepository, MessageResponseDto } from 'src/common';
 
 import { Asset } from './entities';
 import { AssetResponseDto, CreateAssetDto, UpdateAssetDto } from './dto';
+import { AssetCreationTimeSeriesPointDto } from './dto/asset-creation-timeseries-point.dto';
 
 import { CategoriesService } from '../categories/categories.service';
 import { EmployeesService } from 'src/employees/employees.service';
+
+const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+] as const;
 
 @Injectable()
 export class AssetsService implements CrudRepository<Asset> {
@@ -130,6 +146,39 @@ export class AssetsService implements CrudRepository<Asset> {
   }
 
   /**
+   * Counts non-deleted assets created in each calendar month of the given year.
+   * Always returns twelve entries (January–December), with `total` zero when there were none.
+   * @param year Calendar year to aggregate (e.g. 2024).
+   */
+  async getAssetCreationTimeSeriesByYear(year: number): Promise<AssetCreationTimeSeriesPointDto[]> {
+    if (!Number.isInteger(year) || year < 1 || year > 9999) {
+      throw new BadRequestException('Invalid year.');
+    }
+
+    const rows = await this.assetRepository
+      .createQueryBuilder('asset')
+      .select('EXTRACT(MONTH FROM asset.createdAt)', 'month')
+      .addSelect('COUNT(*)', 'total')
+      .where('asset.deletedAt IS NULL')
+      .andWhere('EXTRACT(YEAR FROM asset.createdAt) = :year', { year })
+      .groupBy('EXTRACT(MONTH FROM asset.createdAt)')
+      .getRawMany<{ month: string; total: string }>();
+
+    const totalsByMonth = new Map<number, number>();
+    for (const row of rows) {
+      totalsByMonth.set(Number.parseInt(row.month, 10), Number.parseInt(row.total, 10));
+    }
+
+    const points: AssetCreationTimeSeriesPointDto[] = [];
+    for (let i = 0; i < MONTH_NAMES.length; i++) {
+      const monthName = MONTH_NAMES[i];
+      const total = totalsByMonth.get(i + 1) ?? 0;
+      points.push(new AssetCreationTimeSeriesPointDto(monthName, total));
+    }
+    return points;
+  }
+
+  /**
    * Returns a single valid instance of Asset from the database.
    * @param id Unique Asset identifier.
    * @returns The data from the Asset found in DTO response format.
@@ -216,5 +265,30 @@ export class AssetsService implements CrudRepository<Asset> {
   async cleanEmployeeAssets(employeeId: number): Promise<void> {
     // It cleans all the employee relations in the assets that have that employeeId
     await this.assetRepository.update({ employee: { id: employeeId } }, { employee: null });
+  }
+
+  /**
+   * Deletes the relation of Asset-Employee, making the asset available for new Employees.
+   * Verifies if the asset exists and it's valid, and if it has or not an Employee assigned.
+   * @param id The ID of the asset.
+   * @returns A message object if request was successfull.
+   */
+  async freeAsset(id: number): Promise<MessageResponseDto> {
+    // 1. Finds the valid asset with the ID
+    const asset = await this.findValid(id);
+
+    // 2. Verifies if the asset does not have an employee assigned
+    if (!asset.employee) {
+      throw new BadRequestException('This asset does not have an employee assigned to it.');
+    }
+
+    // 3. Deletes the relation of the asset
+    asset.employee = null;
+
+    // 4. Saves the change in the database
+    await this.assetRepository.save(asset);
+
+    // 5. Returns a success message
+    return new MessageResponseDto('Asset freed succesfully.');
   }
 }

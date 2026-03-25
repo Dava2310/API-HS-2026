@@ -69,6 +69,31 @@ export class CategoriesService implements CrudRepository<Category> {
   }
 
   /**
+   * Returns the category with the highest number of (non-deleted) assets.
+   * Ties are broken by ascending category id.
+   * @returns The category as a response DTO, or `null` if there are no categories.
+   */
+  async findMostPopularByAssetCount(): Promise<CategoryResponseDto | null> {
+    const row = await this.categoryRepository
+      .createQueryBuilder('category')
+      .leftJoin('category.assets', 'asset', 'asset.deletedAt IS NULL')
+      .select('category.id', 'id')
+      .addSelect('COUNT(asset.id)', 'assetCount')
+      .groupBy('category.id')
+      .orderBy('assetCount', 'DESC')
+      .addOrderBy('category.id', 'ASC')
+      .limit(1)
+      .getRawOne<{ id: string; assetCount: string }>();
+
+    if (!row) {
+      return null;
+    }
+
+    const category = await this.findValid(Number(row.id));
+    return new CategoryResponseDto(category);
+  }
+
+  /**
    * Creates a new category in the database.
    * @param createCategoryDto The data for the new category.
    * @returns When created, returns a DTO response object.
