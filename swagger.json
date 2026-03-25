@@ -258,6 +258,45 @@
         ]
       }
     },
+    "/assets/creation-timeseries/{year}": {
+      "get": {
+        "operationId": "AssetsController_getAssetCreationTimeSeriesByYear",
+        "parameters": [
+          {
+            "name": "year",
+            "required": true,
+            "in": "path",
+            "description": "Calendar year to aggregate (e.g. 2024).",
+            "schema": {
+              "example": 2024,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Twelve entries, January through December, with creation totals per month.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssetCreationTimeSeriesPointDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid year."
+          }
+        },
+        "summary": "Returns monthly counts of assets created in the given calendar year.",
+        "tags": [
+          "Assets"
+        ]
+      }
+    },
     "/assets/{id}": {
       "get": {
         "operationId": "AssetsController_findOne",
@@ -368,6 +407,44 @@
           }
         },
         "summary": "Soft deletes the asset from the database.",
+        "tags": [
+          "Assets"
+        ]
+      }
+    },
+    "/assets/{id}/free": {
+      "patch": {
+        "operationId": "AssetsController_freeAsset",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Unique asset identifier in the database.",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Asset freed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Asset has no employee assigned."
+          },
+          "404": {
+            "description": "Asset not found or not valid."
+          }
+        },
+        "summary": "Frees an asset from the employee assigned.",
         "tags": [
           "Assets"
         ]
@@ -686,6 +763,28 @@
           "Categories"
         ]
       }
+    },
+    "/statistics/assets-metrics": {
+      "get": {
+        "operationId": "StatisticsController_assetsMetrics",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Asset metrics for dashboards and reporting.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetsMetricsDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Returns aggregate metrics about assets (totals, availability, popular category).",
+        "tags": [
+          "Statistics"
+        ]
+      }
     }
   },
   "info": {
@@ -797,13 +896,27 @@
             "example": "john.doe@company.com",
             "maxLength": 100,
             "format": "email"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the record was created",
+            "example": "2024-06-15T10:30:00.000Z",
+            "format": "date-time"
+          },
+          "deletedAt": {
+            "type": "string",
+            "description": "Soft-delete timestamp; null while the record is active",
+            "nullable": true,
+            "format": "date-time"
           }
         },
         "required": [
           "id",
           "fullName",
           "employeeCode",
-          "email"
+          "email",
+          "createdAt",
+          "deletedAt"
         ]
       },
       "UpdateEmployeeDto": {
@@ -952,6 +1065,24 @@
             "type": "number",
             "description": "Employee identifier (foreign key) - assigned custodian",
             "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the record was created",
+            "example": "2024-06-15T10:30:00.000Z",
+            "format": "date-time"
+          },
+          "deletedAt": {
+            "type": "string",
+            "description": "Soft-delete timestamp; null while the record is active",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "categoryName": {
+            "type": "string"
+          },
+          "employeeName": {
+            "type": "string"
           }
         },
         "required": [
@@ -962,7 +1093,31 @@
           "model",
           "brand",
           "categoryId",
-          "employeeId"
+          "employeeId",
+          "createdAt",
+          "deletedAt",
+          "categoryName",
+          "employeeName"
+        ]
+      },
+      "AssetCreationTimeSeriesPointDto": {
+        "type": "object",
+        "properties": {
+          "month": {
+            "type": "string",
+            "description": "English name of the calendar month",
+            "example": "January"
+          },
+          "total": {
+            "type": "number",
+            "description": "Number of (non-deleted) assets created in that month for the requested year",
+            "example": 7,
+            "minimum": 0
+          }
+        },
+        "required": [
+          "month",
+          "total"
         ]
       },
       "UpdateAssetDto": {
@@ -1059,13 +1214,27 @@
           },
           "description": {
             "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "When the record was created",
+            "example": "2024-06-15T10:30:00.000Z",
+            "format": "date-time"
+          },
+          "deletedAt": {
+            "type": "string",
+            "description": "Soft-delete timestamp; null while the record is active",
+            "nullable": true,
+            "format": "date-time"
           }
         },
         "required": [
           "id",
           "roleCode",
           "name",
-          "description"
+          "description",
+          "createdAt",
+          "deletedAt"
         ]
       },
       "UpdateRoleDto": {
@@ -1140,9 +1309,17 @@
           "description": {
             "type": "string"
           },
+          "createdAt": {
+            "type": "string",
+            "description": "When the record was created",
+            "example": "2024-06-15T10:30:00.000Z",
+            "format": "date-time"
+          },
           "deletedAt": {
-            "format": "date-time",
-            "type": "string"
+            "type": "string",
+            "description": "Soft-delete timestamp; null while the record is active",
+            "nullable": true,
+            "format": "date-time"
           }
         },
         "required": [
@@ -1150,6 +1327,7 @@
           "name",
           "code",
           "description",
+          "createdAt",
           "deletedAt"
         ]
       },
@@ -1178,6 +1356,48 @@
             "minLength": 5
           }
         }
+      },
+      "AssetsMetricsDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Total number of non-deleted assets in the system",
+            "example": 48,
+            "minimum": 0
+          },
+          "availables": {
+            "type": "number",
+            "description": "Number of assets that are not assigned to any employee",
+            "example": 12,
+            "minimum": 0
+          },
+          "assigned": {
+            "type": "number",
+            "description": "Number of assets currently assigned to an employee",
+            "example": 36,
+            "minimum": 0
+          },
+          "disponibility": {
+            "type": "number",
+            "description": "Share of assets that are unassigned, as a percentage (0–100)",
+            "example": 25,
+            "minimum": 0,
+            "maximum": 100
+          },
+          "popularCategory": {
+            "type": "string",
+            "description": "Name of the category that holds the most assets; N/A when there are no categories",
+            "example": "Laptops"
+          }
+        },
+        "required": [
+          "total",
+          "availables",
+          "assigned",
+          "disponibility",
+          "popularCategory"
+        ]
       }
     }
   }
