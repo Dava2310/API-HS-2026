@@ -4,7 +4,6 @@ import { AppModule } from './app.module';
 import { ConsoleLogger, Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -23,15 +22,13 @@ async function bootstrap() {
     }),
   );
 
-  // API Cookies
-  app.use(cookieParser());
-
   const configService = app.get(ConfigService);
 
   // CORS
-  const corsOrigins = configService.get('CORS_ORIGIN')?.split(' ') || [];
+  const rawOrigin = configService.get<string>('CORS_ORIGIN') || '*';
+  const corsOrigin = rawOrigin === '*' ? '*' : rawOrigin.split(' ');
   app.enableCors({
-    origin: corsOrigins,
+    origin: corsOrigin,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
     allowedHeaders: [
       'Origin',
@@ -42,7 +39,6 @@ async function bootstrap() {
       'Cache-Control',
       'Pragma',
     ],
-    credentials: true,
     preflightContinue: false,
     optionsSuccessStatus: 204,
   });
