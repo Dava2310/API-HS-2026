@@ -80,7 +80,7 @@ export class CategoriesService implements CrudRepository<Category> {
       .select('category.id', 'id')
       .addSelect('COUNT(asset.id)', 'assetCount')
       .groupBy('category.id')
-      .orderBy('assetCount', 'DESC')
+      .orderBy('COUNT(asset.id)', 'DESC')
       .addOrderBy('category.id', 'ASC')
       .limit(1)
       .getRawOne<{ id: string; assetCount: string }>();
