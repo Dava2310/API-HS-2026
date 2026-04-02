@@ -837,7 +837,7 @@ export class SeedAssets1743552005000 implements MigrationInterface {
     // Heavy in Jan (new budget) and Dec (year-end spend); light in Jul-Aug (summer).
     // Largest gap: Dec (80) vs Aug (18) = 62 assets apart.
     //             Jan  Feb  Mar  Apr  May  Jun  Jul  Aug  Sep  Oct  Nov  Dec
-    const dist = [58,  50,  44,  38,  34,  28,  20,  18,  34,  44,  52,  80];
+    const dist = [58, 50, 44, 38, 34, 28, 20, 18, 34, 44, 52, 80];
 
     // Build a flat, chronologically-ordered array of 500 timestamps (one per asset).
     const timestamps: Date[] = [];

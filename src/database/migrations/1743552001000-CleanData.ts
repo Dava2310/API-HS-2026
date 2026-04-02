@@ -11,6 +11,7 @@ export class CleanData1743552001000 implements MigrationInterface {
     await queryRunner.query(`TRUNCATE TABLE role RESTART IDENTITY CASCADE`);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async down(queryRunner: QueryRunner): Promise<void> {
     // Truncated data cannot be restored
   }
