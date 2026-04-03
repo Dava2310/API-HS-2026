@@ -115,7 +115,7 @@ export class AssetResponseDto {
     this.brand = asset.brand;
     this.categoryId = asset.category?.id ?? (asset as any).categoryId;
     this.employeeId = asset.employee?.id ?? (asset as any).employeeId;
-    this.categoryName = asset.category.name;
+    this.categoryName = asset.category?.name ?? 'Unknown';
     this.employeeName = asset.employee ? asset.employee.fullName : 'None';
     this.createdAt = asset.createdAt;
     this.deletedAt = asset.deletedAt;
