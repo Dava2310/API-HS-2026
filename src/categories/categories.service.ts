@@ -4,12 +4,15 @@ import { CrudRepository, MessageResponseDto } from 'src/common';
 import { Category } from './entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
+import { Asset } from '../assets/entities/asset.entity';
 
 @Injectable()
 export class CategoriesService implements CrudRepository<Category> {
   constructor(
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
+    @InjectRepository(Asset)
+    private assetRepository: Repository<Asset>,
   ) {}
 
   /**
@@ -180,10 +183,21 @@ export class CategoriesService implements CrudRepository<Category> {
     // 1. Verifying the existence of the Category
     await this.findValid(id);
 
-    // 2. Soft deleting the category
+    // 2. Block deletion if active assets are still assigned to this category
+    const activeAssetCount = await this.assetRepository.count({
+      where: { category: { id } },
+    });
+
+    if (activeAssetCount > 0) {
+      throw new BadRequestException(
+        `Cannot delete this category because it has ${activeAssetCount} active asset(s) assigned to it. Reassign or delete those assets first.`,
+      );
+    }
+
+    // 3. Soft deleting the category
     await this.categoryRepository.softDelete(id);
 
-    // 3. Returning a message
+    // 4. Returning a message
     return new MessageResponseDto('Category deleted successfully.');
   }
 }
